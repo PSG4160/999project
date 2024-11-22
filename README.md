@@ -69,8 +69,8 @@
   <summary><strong>3️⃣ 주요 문서 관리</strong></summary>
 
 ### **문서화 플랫폼**
-- **[Notion](https://www.notion.so/)**: 회의 기록 및 진행 상황 정리.  
-- **[GitHub Repository](https://github.com/)**: 소스 코드와 버전 관리.
+- **[Notion](https://www.notion.so/)**: 회의 기록 및 진행 상황 정리. (링크를 넣어주세요) 
+- **[GitHub Repository](https://github.com/)**: 소스 코드와 버전 관리. (링크를 넣어주세요)
 
 ### **기록 항목**
 - 트러블슈팅 내용.
@@ -104,9 +104,33 @@
 
 ---
 
-## Git-Hub FLOW
-깃 규칙에 대해 작성할거에요.
-블라블라
+## 🔍 GitHub Flow
+
+<details>
+<summary><strong>Git 관련 작업 시 준수해야 할 규칙입니다.</strong></summary>
+
+### 기본 규칙
+
+1. **작업 시작 전 최신 상태 동기화**  
+   항상 작업 전 `git fetch origin`을 통해 원격 저장소의 최신 정보를 동기화합니다.
+
+2. **개인 브랜치에서 작업**  
+   각자 자신의 브랜치에서 작업하며, 다른 조원의 브랜치를 수정하지 않도록 유의하세요.
+
+3. **Merge 규칙**  
+   main 브랜치로 Merge 시, Pull Request에서 **최소 2명**의 조원 확인(Review Approval)을 받아야 합니다.
+
+4. **충돌 해결**  
+   충돌이 발생한 경우, 팀원 간 충분히 공유하여 협업으로 문제를 해결합니다.
+
+5. **위 내용과 더불어 플로우 로직이 이해가 쉽도록 작성 부탁드립니다.**
+
+---
+
+
+
+</details>
+
 
 
 ---
