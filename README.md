@@ -41,7 +41,7 @@
 
 </details>
 
----
+--- 
 
 <details>
   <summary><strong>2️⃣ 역할 분담 (5인 기준)</strong></summary>
@@ -69,7 +69,7 @@
 
 ### **문서화 플랫폼**
 - **[Notion](https://www.notion.so/)**: 회의 기록 및 진행 상황 정리. (링크를 넣어주세요) 
-- **[GitHub Repository](https://github.com/)**: 소스 코드와 버전 관리. (링크를 넣어주세요)
+- **[GitHub Repository](https://github.com/PSG4160/999project)**: 소스 코드와 버전 관리. 
 
 ### **기록 항목**
 - 트러블슈팅 내용.
