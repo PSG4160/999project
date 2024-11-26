@@ -1,2 +1,8 @@
 # 환경 파일
 .env
+
+# 주피터 체크포인트
+.ipynb_checkpoints/
+
+# emb 캐시 폴더
+박성규/emb/
