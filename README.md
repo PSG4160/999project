@@ -6,103 +6,6 @@
   <img src="https://img.shields.io/badge/Database-MySQL-lightblue?style=flat-square&logo=mysql&logoColor=white" alt="MySQL">
 </div>
 
-# 📗 **999조 룰**
-
-
-
-<details>
-<summary><strong>✨ 이렇게 진행돼요 </strong></summary>
-
-
-# 📜 **Team Project Rules and Roles**
-
-> 아래는 팀 프로젝트 진행 시 참고할 기본 규칙과 역할 분담입니다. (**최종 확정은 회의에서 함께 수정 후 진행**합니다.)
-
----
-
-<details>
-  <summary><strong>1️⃣ 팀 프로젝트 기본 규칙</strong></summary>
-
-### 1. 원활한 소통
-- 지속적이고 적극적인 의견 교환을 통해 프로젝트를 완성해 나갑니다.
-- 구체적인 의견을 나누며 발전적인 소통을 지향합니다.
-
-### 2. 긍정적인 표현
-- 비난 대신 **건설적인 피드백**을 주고받습니다.
-- 거친 아이디어는 발전 가능성이 있는 아이디어입니다.
-
-### 3. 배려심 가지기
-- 학습 성취도와 경험의 차이를 이해하며 서로 존중합니다.
-- 약속을 잘 지키고, 서로의 시간을 소중히 여깁니다.
-
-### 4. 문서화와 정리
-- **회의와 진행 상황을 꼼꼼히 기록**하고 공유합니다.
-- 트러블슈팅 및 주요 내용을 문서화하여 팀 내 공유를 활성화합니다.
-
-</details>
-
---- 
-
-<details>
-  <summary><strong>2️⃣ 역할 분담 (5인 기준)</strong></summary>
-
-### **1. 프로젝트**
-- **데이터 수집 및 정제**: 플랫폼 API, 크롤링, 데이터 시각화
-- **RAG 개발**: 수집 데이터를 활용한 RAG 코딩.
-- **LLM 개발**: 전체적인 LLM 개발 및 코드 작성.
-- **UI/UX 디자인**: Streamlit 인터페이스 설계 및 배포.
-- **서버 관리**: 서버 배포 및 테스트 자료 관리.
-
-### **2. 발표 및 문서 관리**
-- **발표자**: 발표 준비 및 진행.
-- **README 작성**: 프로젝트 README 문서 작성.
-- **SA 문서관리**: 회의 기록 및 진행 상황 정리.
-- **PPT 작성**: 발표 자료 제작.
-- **시연 영상 준비**: 프로젝트 시연 영상 제작.
-
-</details>
-
----
-
-<details>
-  <summary><strong>3️⃣ 주요 문서 관리</strong></summary>
-
-### **문서화 플랫폼**
-- **[Notion](https://www.notion.so/)**: 회의 기록 및 진행 상황 정리. (링크를 넣어주세요) 
-- **[GitHub Repository](https://github.com/PSG4160/999project)**: 소스 코드와 버전 관리. 
-
-### **기록 항목**
-- 트러블슈팅 내용.
-- 작업 진행 상황 및 주요 변경 사항.
-- 팀원별 진행 상황과 피드백.
-
-</details>
-
----
-
-<details>
-  <summary><strong>4️⃣ 발표 자료 및 시연 준비</strong></summary>
-
-### **발표 자료**
-- **PPT 제작**: 주요 아이디어와 진행 상황을 명확히 전달.
-- **시연 영상 제작**: 최종 결과물을 짧고 임팩트 있게 표현.
-
-### **발표 체크리스트**
-- 프로젝트 주요 기능과 구현 방법 설명.
-- 팀 협업 과정과 역할 분담 강조.
-- 발표 자료와 시연의 연계성 확인.
-
-</details>
-
----
- 
-
-
-
-</details>
-
----
-
 ## 🔍 GitHub Flow
 
 <details>
@@ -126,11 +29,7 @@
 
 ---
 
-
-
 </details>
-
-
 
 ---
 
@@ -184,6 +83,8 @@
 </details>
 
 
+
+
 ---
 
 ## 👩‍💻 **팀원 소개**
@@ -218,9 +119,10 @@
 
 </details>
 
-
-
-
+<details>
+<summary><strong>개발 기간 및 개발 환경</strong></summary>
+개발 기간: 2024.11.21 ~ 2024.12.04
+개발 환경: 프로젝트동안 사용한 개발환경 기술
 
 ---
 
@@ -301,9 +203,27 @@ print("대피소 정보:", output)
 </details>
 
 ---
+
+## 저작권 및 사용권 정보
+
+---
+
 ## 🌍 **배포 링크**
 
 [🔗 프로젝트 바로가기](https://project-link.com)
 
+프로젝트에 가상환경 yml 포함하기
+설치방법 기술, 기타 요구사항 기술
 ---
 
+## 참고 자료
+<details>
+<summary><strong>참고 자료</strong></summary>
+[참고 자료 제목](자료 링크)
+
+</details>
+
+## 업데이트
+<details>
+<summary><strong></strong></summary>
+</details>
