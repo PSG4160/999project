@@ -254,15 +254,11 @@ if __name__ == "__main__":
         print(f"경도: {coordinates[0]}, 위도: {coordinates[1]}")
 
 def find_nearest_shelters(address: str) -> str:
-    """
-    주어진 주소를 기반으로 가까운 대피소 n개 정보를 반환하는 함수.
-    """
     coordinates = get_coordinates(address)
     if coordinates:
         user_lon = float(coordinates[0])
         user_lat = float(coordinates[1])
 
-        
         def calculate_distance(row):
             try:
                 shelter_lat = float(row['위도'])
@@ -271,15 +267,18 @@ def find_nearest_shelters(address: str) -> str:
             except (ValueError, TypeError):
                 return None
 
-        # 거리 계산 및 데이터프레임 업데이트
-        df_result['거리'] = df_result.apply(calculate_distance, axis=1)
+        # 거리 계산 및 데이터프레임 업데이트 (loc 사용)
+        df_result.loc[:, '거리'] = df_result.apply(calculate_distance, axis=1)
+
+        # 유효한 거리 필터링
         df_valid = df_result[df_result['거리'].notnull()]
+
+        # 거리 기준 정렬 및 상위 3개 선택
         df_sorted = df_valid.sort_values(by='거리')
         df_top3 = df_sorted.head(3)
 
         # 결과 문자열 생성
         result = "\n가장 가까운 대피소 정보 (거리순):"
-        # 추후에 대피소 정보를 가져오는 테스트할때, 코드 변경할 수 있습니다.
         for idx, row in df_top3.iterrows():
             result += f"\n\n[{idx+1}]"
             result += f"\n시설명: {row['시설명']}"
@@ -289,9 +288,11 @@ def find_nearest_shelters(address: str) -> str:
             shelter_add = row['주소'].replace(' ', '') 
             kakao_map_link = f"https://map.kakao.com/link/search/{shelter_add}"
             result += f"\n지도 링크: {kakao_map_link}\n"
+
         return result
     else:
         return "좌표를 가져올 수 없습니다."
+
 
 
 # 함수 스키마 정의
