@@ -350,7 +350,7 @@ chat_template = ChatPromptTemplate.from_messages(
             "당신은 비상사태 대처 매뉴얼 전문 챗봇입니다. "
             "재난 상황(지진, 화재, 홍수, 전쟁 등)이 발생했을 때 사용자가 안전하게 대피할 수 있도록 최적의 정보를 제공하는 것이 목표입니다.\n\n"
             "제공된 컨텍스트와 일반 상식을 사용해서, 질문에 답변하세요."
-            "사용자 위치가 제공될 수 있습니다. 위도 경도 형태로"
+            "위도 경도 형태로 사용자 위치가 제공될 수 있습니다"
             "아래의 지침에 따라 응답하세요:\n"
             "1. 역할 정의: 사용자에게 신뢰할 수 있는 정보를 제공하고, 필요한 경우 함수 호출을 통해 가장 가까운 대피소를 추천하세요.\n"
             "2. 대화 스타일: 간결하고 명확하며 사용자 친화적인 언어를 사용하고, 긴급 상황에 맞는 전문적인 톤을 유지하세요.\n"
@@ -468,18 +468,17 @@ def get_response(user_input: str, user_location: dict = None):
 
     # 2. 위치 정보를 프롬프트에 포함
     if user_location:
-        location_message = f"현재 사용자의 위도: {user_location['latitude']}, 경도: {user_location['longitude']}입니다."
-        user_message += [{"role": "system", "content": location_message}]
+        location_message = {
+            "role": "system",
+            "content": f"현재 사용자의 위도: {user_location['latitude']}, 경도: {user_location['longitude']}입니다."
+        }
+        user_message.append(location_message)
 
     # 3. 이전 대화 기록 불러오기
     messages = memory.load_memory_variables({})["history"] + user_message
 
     # 4. 모델 호출하여 응답 생성
     response = model.invoke(messages)
-
-    # 디버깅: 모델의 응답과 추가 데이터 확인
-    # print(f"[DEBUG] 모델 응답: {response.content}")
-    # print(f"[DEBUG] 추가 데이터: {response.additional_kwargs}")
 
     # 5. 대화 기록 저장
     memory.save_context({"input": user_input}, {"output": response.content})
@@ -494,9 +493,6 @@ def get_response(user_input: str, user_location: dict = None):
         if isinstance(function_args, str):
             function_args = json.loads(function_args)
 
-        # 디버깅: 함수 호출 정보 확인
-        # print(f"[DEBUG] 함수 호출: {function_name}, 인수: {function_args}")
-
         # 위치 정보 병합
         if user_location:
             function_args['latitude'] = user_location.get("latitude")
@@ -510,19 +506,17 @@ def get_response(user_input: str, user_location: dict = None):
                 address=function_args.get("address")
             )
 
-            # 함수 호출 결과 저장
-            function_message = FunctionMessage(
-                name=function_name,
-                content=function_result
-            )
-            memory.save_context({"input": function_message.content}, {"output": function_result})
+            # 함수 호출 결과를 모델에 전달하여 최종 응답 생성
+            function_message = {
+                "role": "function",
+                "name": function_name,
+                "content": function_result
+            }
+            messages.append(function_message)
+            final_response = model.invoke(messages)
 
-            # 모델에 함수 호출 결과 전달하여 최종 응답 생성
-            final_response = model.invoke(memory.load_memory_variables({})["history"])
+            # 대화 기록 저장
             memory.save_context({"input": function_result}, {"output": final_response.content})
-
-            # 디버깅: 최종 응답 확인
-            # print(f"[DEBUG] 모델 최종 응답: {final_response.content}")
 
             return {
                 "function_call": {
@@ -534,7 +528,6 @@ def get_response(user_input: str, user_location: dict = None):
             }
 
     # 함수 호출이 없으면 일반 응답 반환
-    # print(f"[DEBUG] 함수 호출 없음")
     return {"response": response.content}
 
 
