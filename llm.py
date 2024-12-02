@@ -111,7 +111,7 @@ for idx, chunk in enumerate(splits):
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 # 2. 로컬 파일 저장소 설정 (사용자 환경에 맞는 경로로 설정)
-store = LocalFileStore("F:/STUDY/sparta/999/박성규/emb")  # 로컬 경로 설정 각자 작성 해야합닏.
+store = LocalFileStore("F:/STUDY/sparta/999/SourceCode/emb")  # 로컬 경로 설정 각자 작성 해야합닏.
 
 # 3. 캐시를 지원하는 임베딩 생성
 cached_embedder = CacheBackedEmbeddings.from_bytes_store(
