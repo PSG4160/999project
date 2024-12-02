@@ -5,6 +5,6 @@
 .ipynb_checkpoints/
 
 # emb 캐시 폴더
-박성규/emb/
+SourceCode/emb/
 
 /__pycache__
