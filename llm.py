@@ -246,69 +246,89 @@ def get_coordinates(query):
     return None
 
 
-# 테스트 실행
-if __name__ == "__main__":
-    query = "동대구역"  # 검색할 장소 또는 주소
-    coordinates = get_coordinates(query)
-    if coordinates:
-        print(f"경도: {coordinates[0]}, 위도: {coordinates[1]}")
+# # 테스트 실행
+# if __name__ == "__main__":
+#     query = "동대구역"  # 검색할 장소 또는 주소
+#     coordinates = get_coordinates(query)
+#     if coordinates:
+#         print(f"경도: {coordinates[0]}, 위도: {coordinates[1]}")
 
-def find_nearest_shelters(address: str) -> str:
-    coordinates = get_coordinates(address)
-    if coordinates:
-        user_lon = float(coordinates[0])
-        user_lat = float(coordinates[1])
-
-        def calculate_distance(row):
-            try:
-                shelter_lat = float(row['위도'])
-                shelter_lon = float(row['경도'])
-                return haversine_distance(user_lat, user_lon, shelter_lat, shelter_lon)
-            except (ValueError, TypeError):
-                return None
-
-        # 거리 계산 및 데이터프레임 업데이트 (loc 사용)
-        df_result.loc[:, '거리'] = df_result.apply(calculate_distance, axis=1)
-
-        # 유효한 거리 필터링
-        df_valid = df_result[df_result['거리'].notnull()]
-
-        # 거리 기준 정렬 및 상위 3개 선택
-        df_sorted = df_valid.sort_values(by='거리')
-        df_top3 = df_sorted.head(3)
-
-        # 결과 문자열 생성
-        result = "\n가장 가까운 대피소 정보 (거리순):"
-        for idx, row in df_top3.iterrows():
-            result += f"\n\n[{idx+1}]"
-            result += f"\n시설명: {row['시설명']}"
-            result += f"\n주소: {row['주소']}"
-            result += f"\n현재 위치로부터의 거리: {row['거리']:.2f} km"
-
-            shelter_add = row['주소'].replace(' ', '') 
-            kakao_map_link = f"https://map.kakao.com/link/search/{shelter_add}"
-            result += f"\n지도 링크: {kakao_map_link}\n"
-
-        return result
+def find_nearest_shelters(latitude: float = None, longitude: float = None, address: str = None) -> str:
+    """
+    주어진 위도와 경도 또는 주소를 기준으로 가장 가까운 대피소를 검색합니다.
+    """
+    # 주소가 주어진 경우 좌표로 변환
+    if address:
+        coordinates = get_coordinates(address)
+        if coordinates:
+            user_lon = float(coordinates[0])
+            user_lat = float(coordinates[1])
+        else:
+            return "주소로부터 좌표를 가져올 수 없습니다."
+    elif latitude is not None and longitude is not None:
+        user_lat = latitude
+        user_lon = longitude
     else:
-        return "좌표를 가져올 수 없습니다."
+        return "주소나 위도/경도를 제공해주세요."
+
+    # 거리 계산 함수
+    def calculate_distance(row):
+        try:
+            shelter_lat = float(row['위도'])
+            shelter_lon = float(row['경도'])
+            return haversine_distance(user_lat, user_lon, shelter_lat, shelter_lon)
+        except (ValueError, TypeError):
+            return None
+
+    # 데이터프레임에 거리 계산 적용
+    df_result['거리'] = df_result.apply(calculate_distance, axis=1)
+
+    # 유효한 거리만 필터링
+    df_valid = df_result[df_result['거리'].notnull()]
+
+    # 거리 기준으로 정렬 및 상위 3개 선택
+    df_sorted = df_valid.sort_values(by='거리')
+    df_top3 = df_sorted.head(3)
+
+    # 결과 문자열 생성
+    result = "\n가장 가까운 대피소 정보 (거리순):"
+    for idx, row in df_top3.iterrows():
+        result += f"\n\n[{idx + 1}]"
+        result += f"\n시설명: {row['시설명']}"
+        result += f"\n주소: {row['주소']}"
+        result += f"\n현재 위치로부터의 거리: {row['거리']:.2f} km"
+
+        # 카카오 지도 링크 추가
+        shelter_add = row['주소'].replace(' ', '')
+        kakao_map_link = f"https://map.kakao.com/link/search/{shelter_add}"
+        result += f"\n지도 링크: {kakao_map_link}\n"
+
+    return result
 
 
 
-# 함수 스키마 정의
+# 함수 스키마 수정
 functions = [
     {
         "name": "find_nearest_shelters",
-        "description": "주어진 주소나 장소명을 기반으로 가장 가까운 대피소 정보를 반환하는 함수.",
+        "description": "주소나 위도/경도를 기반으로 가장 가까운 대피소 정보를 반환하는 함수.",
         "parameters": {
             "type": "object",
             "properties": {
+                "latitude": {
+                    "type": "number",
+                    "description": "사용자의 현재 위도 (옵션)"
+                },
+                "longitude": {
+                    "type": "number",
+                    "description": "사용자의 현재 경도 (옵션)"
+                },
                 "address": {
                     "type": "string",
-                    "description": "대피소를 찾고자 하는 주소"
+                    "description": "대피소를 찾고자 하는 주소 또는 장소명 (옵션)"
                 }
             },
-            "required": ["address"]
+            "required": []
         }
     }
 ]
@@ -329,7 +349,8 @@ chat_template = ChatPromptTemplate.from_messages(
         ("system", (
             "당신은 비상사태 대처 매뉴얼 전문 챗봇입니다. "
             "재난 상황(지진, 화재, 홍수, 전쟁 등)이 발생했을 때 사용자가 안전하게 대피할 수 있도록 최적의 정보를 제공하는 것이 목표입니다.\n\n"
-            "제공된 컨텍스트만 사용해서, 질문에 답변하세요."
+            "제공된 컨텍스트와 일반 상식을 사용해서, 질문에 답변하세요."
+            "위도 경도 형태로 사용자 위치가 제공될 수 있습니다"
             "아래의 지침에 따라 응답하세요:\n"
             "1. 역할 정의: 사용자에게 신뢰할 수 있는 정보를 제공하고, 필요한 경우 함수 호출을 통해 가장 가까운 대피소를 추천하세요.\n"
             "2. 대화 스타일: 간결하고 명확하며 사용자 친화적인 언어를 사용하고, 긴급 상황에 맞는 전문적인 톤을 유지하세요.\n"
@@ -437,22 +458,32 @@ def initialize() -> str:
     return response.content
 
 
-def get_response(user_input: str):
+def get_response(user_input: str, user_location: dict = None):
     """
     사용자 입력을 받아 모델 응답을 처리하고, 함수 호출이 필요한 경우
     적절히 실행하여 최종 응답을 반환합니다.
     """
-
     # 1. 사용자 입력을 메시지로 변환
     user_message = chat_template.format_messages(user_input=user_input)
-    # 2. 이전 대화 기록 불러오기
+
+    # 2. 위치 정보를 프롬프트에 포함
+    if user_location:
+        location_message = {
+            "role": "system",
+            "content": f"현재 사용자의 위도: {user_location['latitude']}, 경도: {user_location['longitude']}입니다."
+        }
+        user_message.append(location_message)
+
+    # 3. 이전 대화 기록 불러오기
     messages = memory.load_memory_variables({})["history"] + user_message
-    # 3. 모델 호출하여 응답 생성
+
+    # 4. 모델 호출하여 응답 생성
     response = model.invoke(messages)
-    # 4. 대화 기록 저장
+
+    # 5. 대화 기록 저장
     memory.save_context({"input": user_input}, {"output": response.content})
 
-    # 5. 함수 호출 처리
+    # 6. 함수 호출 처리
     function_call = response.additional_kwargs.get("function_call")
     if function_call:
         function_name = function_call.get("name")
@@ -462,24 +493,31 @@ def get_response(user_input: str):
         if isinstance(function_args, str):
             function_args = json.loads(function_args)
 
+        # 위치 정보 병합
+        if user_location:
+            function_args['latitude'] = user_location.get("latitude")
+            function_args['longitude'] = user_location.get("longitude")
+
         if function_name == "find_nearest_shelters":
             # 함수 실행
-            function_result = find_nearest_shelters(**function_args)
-
-            # 함수 호출 메시지 생성
-            function_message = FunctionMessage(
-                name=function_name,
-                content=function_result
+            function_result = find_nearest_shelters(
+                latitude=function_args.get("latitude"),
+                longitude=function_args.get("longitude"),
+                address=function_args.get("address")
             )
 
-            # 대화 기록에 함수 메시지 저장
-            memory.save_context({"input": function_message.content}, {"output": function_result})
+            # 함수 호출 결과를 모델에 전달하여 최종 응답 생성
+            function_message = {
+                "role": "function",
+                "name": function_name,
+                "content": function_result
+            }
+            messages.append(function_message)
+            final_response = model.invoke(messages)
 
-            # 모델에 함수 호출 결과 전달하여 최종 응답 생성
-            final_response = model.invoke(memory.load_memory_variables({})["history"])
-            # 대화 기록에 최종 응답 저장
+            # 대화 기록 저장
             memory.save_context({"input": function_result}, {"output": final_response.content})
-            # 최종 응답 반환
+
             return {
                 "function_call": {
                     "name": function_name,
@@ -488,11 +526,9 @@ def get_response(user_input: str):
                 },
                 "response": final_response.content
             }
-        else:
-            return {"response": f"알 수 없는 함수 호출: {function_name}"}
-    else:
-        # 함수 호출이 없는 경우 일반 응답 반환
-        return {"response": response.content}
+
+    # 함수 호출이 없으면 일반 응답 반환
+    return {"response": response.content}
 
 
 
