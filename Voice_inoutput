@@ -1,0 +1,94 @@
+import requests
+
+# Naver Clova Speech 함수
+def naver_clova_speech_to_text(api_url, secret_key, audio_file_path, language="ko"):
+    """
+    네이버 클로바 Speech-To-Text API를 이용해 음성을 텍스트로 변환하는 함수.
+    
+    :param api_url: 클로바 Speech API 엔드포인트 URL
+    :param secret_key: STT API의 시크릿 키
+    :param audio_file_path: 변환할 음성 파일 경로
+    :param language: 언어 설정 (기본값: 한국어 "ko")
+    :return: 변환된 텍스트
+    """
+    headers = {
+        "X-CLOVASPEECH-API-KEY": secret_key,
+    }
+
+    with open(audio_file_path, 'rb') as audio_file:
+        response = requests.post(
+            api_url,
+            headers=headers,
+            files={"media": audio_file},
+            data={"language": language}
+        )
+
+    if response.status_code == 200:
+        result = response.json()
+        return result.get("text", "")
+    else:
+        print(f"STT 에러 발생: {response.status_code}, {response.text}")
+        return None
+
+# Naver Clova Voice 함수
+def naver_clova_text_to_speech(api_url, secret_key, text, speaker="nara", output_file_path="output.mp3"):
+    """
+    네이버 클로바 Text-To-Speech API를 이용해 텍스트를 음성으로 변환하는 함수.
+    
+    :param api_url: 클로바 Voice API 엔드포인트 URL
+    :param secret_key: TTS API의 시크릿 키 (id, key로 구성된 딕셔너리)
+    :param text: 변환할 텍스트
+    :param speaker: 음성 스피커 설정 (기본값: "nara")
+    :param output_file_path: 생성된 음성 파일 저장 경로
+    :return: None
+    """
+    headers = {
+        "X-NCP-APIGW-API-KEY-ID": secret_key["id"],
+        "X-NCP-APIGW-API-KEY": secret_key["key"],
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "speaker": speaker,
+        "speed": 0,
+        "text": text
+    }
+
+    response = requests.post(api_url, headers=headers, json=data)
+
+    if response.status_code == 200:
+        with open(output_file_path, "wb") as output_file:
+            output_file.write(response.content)
+        print(f"TTS 음성 파일이 저장되었습니다: {output_file_path}")
+    else:
+        print(f"TTS 에러 발생: {response.status_code}, {response.text}")
+
+# 통합 코드 실행
+if __name__ == "__main__":
+    # Clova API 정보 설정
+    CLOVA_SPEECH_API_URL = "https://clovaspeech-gw.ncloud.com/external/v1/recognize"
+    CLOVA_VOICE_API_URL = "https://naveropenapi.apigw.ntruss.com/voice/v1/tts"
+    
+    SECRET_KEY = {
+        "speech": "YOUR_STT_SECRET_KEY",  # STT용 API 키
+        "voice": {
+            "id": "YOUR_TTS_CLIENT_ID",  # TTS용 Client ID
+            "key": "YOUR_TTS_CLIENT_SECRET"  # TTS용 Client Secret
+        }
+    }
+
+    # 1. 음성을 텍스트로 변환
+    AUDIO_FILE_PATH = "input_audio.wav"  # 입력 음성 파일 경로
+    user_input = naver_clova_speech_to_text(CLOVA_SPEECH_API_URL, SECRET_KEY["speech"], AUDIO_FILE_PATH)
+
+    if user_input:
+        print(f"사용자 입력 텍스트: {user_input}")
+
+        # 2. 텍스트에 대한 챗봇 응답 생성 (간단한 예제 응답)
+        chatbot_response = f"입력하신 내용은 '{user_input}' 입니다. 비상 상황 시 119에 신고하세요."
+
+        # 3. 응답을 음성으로 변환
+        OUTPUT_FILE_PATH = "response_audio.mp3"  # 출력 음성 파일 경로
+        naver_clova_text_to_speech(CLOVA_VOICE_API_URL, SECRET_KEY["voice"], chatbot_response, output_file_path=OUTPUT_FILE_PATH)
+    else:
+        print("음성 입력 변환에 실패했습니다.")
