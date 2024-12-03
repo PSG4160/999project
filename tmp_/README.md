@@ -28,19 +28,46 @@
 어느 부분에서 성능개선이 이루어졌는지?
 before&after 수치/시각적으로 표현
 **트러블슈팅**
+<detail>
+<summary><strong>functions 파라미터, 함수 호출 로직</strong></summary>
+<strong>1. functions 파라미터 경고 문제
+
+문제: ChatOpenAI 모델 초기화 시 functions를 직접 전달했을 때 다음과 같은 경고 발생: 
+
+```
+functions is not default parameter. functions was transferred to model_kwargs. Please confirm that functions is what you intended. 
+```
+
+원인: 
+
+</detail>
 
 
 ---
 
 ## 인프라 아키텍쳐 & 적용기술
+### 인프라 아키텍쳐
 ![](SourceCode\FigJam_basics.png)
- 
+
+1. 사용자 인터페이스: `Streamlit` 기반으로 사용자 입력 및 결과 표시
+2. 백엔드 API
+- OpenAI GPT 모델: 자연어 이해 및 처리
+- 카카오 지도 API: 위치 기반 검색
+- 재난안전플랫폼 API: 대피소 23,000개 정보 호출
+3. 데이터 레이어: 
+- PDF 데이터 파싱(PyPDFLoader)
+- 로컬 JSON 데이터(대피소 정보)
+4. 데이터베이스: 
+- FAISS: 유사도 검색 엔진
+- Local File Store: 캐싱된 임베딩 저장
+5. 배포 환경: 
+- 로컬 개발 및 Streamlit 서비스, 데모 테스트용 ngrok 사용(추후 AWS, GCP 고려)
+
 
 ### 적용 기술
-<details>
-<summary><strong>LLM</strong></summary>
+<details><summary><strong>LLM</strong></summary>
 OpenAI의 GTP-4o API를 이용하여 사용자의 자연어 질의에 자동으로 응답을 생성해 출력하는 기능 구현 <br>
-답변을 생성할 때 RAG, function calling을 이용해 비상 상황에 대한 대처 방법 또는 입력 위치에 따라 가장 가까운 대피소 위치 정보를 반환받아 답변 생성에 사용 <br>
+답변을 생성할 때 RAG, function calling을 이용해 비상 상황에 대한 대처 방법 또는 입력 위치에 따라 가장 가까운 대피소 위치 정보를 반환받아 답변 생성에 사용 <br></br>
 사용된 시스템 프롬프트: 
 
 ``` 
@@ -68,8 +95,7 @@ chat_template = ChatPromptTemplate.from_messages(
 
 </details>
 
-<details>
-<summary><strong>RAG</strong></summary>
+<details><summary><strong>RAG</strong></summary>
 PDF와 재난안전데이터공유플랫폼에서 가져온 API에서 대응법을 학습해 VectorDB에 임베딩된 데이터를 저장, 사용자의 질문에 관련된 데이터를 검색해 결과 데이터를 LLM에 전달해 정확도 높은 답변 생성<br>
 대피소의 위치 데이터의 경우, 제공되는 API의 한계로 인해 등록된 IP 외에는 API의 사용이 불가하여 SourceCode 디렉토리 안에 API로부터 응답받은 json파일이 미리 저장되어 있다.<br>
 재난 상황에 대한 사용자의 질문을 받아 자연어 질의에 기반한 정확한 답변 제공 <br></br>
@@ -89,8 +115,7 @@ FAISS와 Pandas를 이용해 벡터DB 구현
 캐시 지원 임베딩, OpenAI 임베딩 모델(text-embedding-3-small) 사용
 </details>
 
-<details>
-<summary><strong>위치 기반 서비스 (LBS)</strong></summary>
+<details><summary><strong>위치 기반 서비스 (LBS)</strong></summary>
 카카오맵 API를 이용하여 검색한 위치의 경도와 위도를 반환함<br>
 function calling을 통해서 현재 위치에서 가장 가까운 대피소 위치 반환
 
@@ -99,29 +124,25 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 - DMS를 소수점 좌표로 변환, 위도와 경도에 각각 수행
 - 시설명, 주소, 위도, 경도를 제외한 불필요한 데이터 정리
 
-<details>
-<summary><strong>get_coordinates(query)</strong></summary>
+<details><summary><strong>get_coordinates(query)</strong></summary>
 카카오 API를 호출해 사용자가 입력한 주소를 검색, 검색결과가 없을 경우 키워드를 이용해 주소 검색
 검색한 주소의 좌표 반환
 </details>
 
-
-<details>
-<summary><strong>haversine_distance(lat1, lon1, lat2, lon2)</strong></summary>
+<details><summary><strong>haversine_distance(lat1, lon1, lat2, lon2)</strong></summary>
 두 장소의 위도와 경도를 받아 두 지점 사이의 거리를 킬로미터 단위로 계산
 </details>
 
-<details>
-<summary><strong>find_nearest_shelters(latitude, longitude, address) -> str</strong></summary>
+<details><summary><strong>find_nearest_shelters(latitude, longitude, address) -> str</strong></summary>
 주어진 위도와 경도 또는 주소를 기준으로 가장 가까운 대피소 검색
 만약 사용자가 입력으로 주소를 주었을 경우 해당 주소를 좌표로 전환
-- **calculate_distance(row)**: 전처리된 데이터프레임의 각 행에 haversine_distance()를 적용해 사용자의 위치와 대피소의 거리를 계산하는 함수
+
+- <b>calculate_distance(row)</b>: 
+전처리된 데이터프레임의 각 행에 haversine_distance()를 적용해 사용자의 위치와 대피소의 거리를 계산하는 함수
 
 계산된 거리 중 null이 아닌 값만 유효한 값으로 취급해 유효하지 않은 값은 이후의 과정에서 배제한다. 
 남은 대피소 중 거리 기준으로 정렬해 상위 3개만 선택해 결과 문자열을 생성하고 LLM으로 전달한다.  
 </details>
-
-
 
 </details>
 
@@ -138,7 +159,6 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
    - 가장 가까운 대피소를 안내.
 
 ### 4. **추가 가능 기능** 
-   - 음성 인식 기능, 음성 출력
    - 실시간 재난 알림.  
    - 사용자 맞춤형 경고 메시지.  
 
@@ -207,3 +227,10 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 </details>
 
 </details>
+
+## **성과 및 회고**
+### **프로젝트의 성과**
+
+### **개선 목표**
+재난안전플랫폼에서 제공한 API는 
+음성 인식 및 음성 출력 기능,  
