@@ -98,15 +98,6 @@ recursive_text_splitter = RecursiveCharacterTextSplitter(
 
 splits = recursive_text_splitter.split_documents(all_docs)
 
-'''
-# 청크 확인 디버그 코드
-for idx, chunk in enumerate(splits):
-    print(f"Chunk {idx + 1}:")
-    print("-" * 20)
-    print(chunk.page_content)
-    print("\n" + "=" * 40 + "\n")
-'''
-
 # 1. OpenAI 임베딩 모델 초기화
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
@@ -119,24 +110,6 @@ cached_embedder = CacheBackedEmbeddings.from_bytes_store(
     document_embedding_cache=store,
     namespace=embeddings.model,  # 모델 이름을 네임스페이스로 설정
 )
-
-
-'''
-# 4. 예시 텍스트
-example_texts = [
-    "OpenAI의 임베딩 모델은 강력한 자연어 처리를 제공합니다.",
-    "로컬 캐시는 효율적인 데이터 처리를 가능하게 합니다.",
-    "임베딩 모델을 활용하여 고품질의 애플리케이션을 개발할 수 있습니다."
-]
-
-# 5. 임베딩 생성 및 저장된 결과 출력
-for text in example_texts:
-    embedding = cached_embedder.embed_query(text)  # 임베딩 생성
-    print(f"텍스트: {text}")
-    print(f"임베딩 (첫 10개 값): {embedding[:10]}")  # 임베딩 값의 일부를 출력
-
-print("임베딩 생성 완료 및 로컬 캐시에 저장되었습니다.")
-'''
 
 vectorstore = FAISS.from_documents(documents=splits, embedding=cached_embedder)
 
@@ -244,14 +217,6 @@ def get_coordinates(query):
     # 결과 없음
     print("검색 결과가 없습니다.")
     return None
-
-
-# # 테스트 실행
-# if __name__ == "__main__":
-#     query = "동대구역"  # 검색할 장소 또는 주소
-#     coordinates = get_coordinates(query)
-#     if coordinates:
-#         print(f"경도: {coordinates[0]}, 위도: {coordinates[1]}")
 
 def find_nearest_shelters(latitude: float = None, longitude: float = None, address: str = None) -> str:
     """
@@ -529,35 +494,6 @@ def get_response(user_input: str, user_location: dict = None):
 
     # 함수 호출이 없으면 일반 응답 반환
     return {"response": response.content}
-
-
-
-
-
-'''
-def get_response(user_input: str):
-    response = chat_chain.invoke(user_input)
-    function_call = response.additional_kwargs.get("function_call")
-    if function_call:
-        function_name = function_call["name"]
-        function_args = json.loads(function_call["arguments"])
-        function_result = globals()[function_name](**function_args)
-        return {
-            "function_call": {
-                "name": function_name,
-                "arguments": function_args,
-                "result": function_result
-            },
-            "response": response.content
-        }
-    else:
-        return {"response": response.content}
-
-'''
-
-
-
-
 
 
 

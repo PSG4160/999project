@@ -6,25 +6,7 @@ st.title("🚨 비상사태 대처 매뉴얼 챗봇 🚨")
 st.write("비상사태에서 안전한 대처를 도와드리는 챗봇입니다. 질문이 있다면 자유롭게 입력하세요.")
 
 
-# CSS 스타일 적용
-st.markdown("""
-    <style>
-    button[data-testid="geolocation_button"] {
-        background-color: #ff6f61;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 8px;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    button[data-testid="geolocation_button"]:hover {
-        background-color: #e64a19;
-    }
-    </style>
-""", unsafe_allow_html=True)
+
 
 # 위치 정보 버튼 출력
 location = streamlit_geolocation()
