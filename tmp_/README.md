@@ -39,11 +39,14 @@ before&after 수치/시각적으로 표현
 ### 적용 기술
 <details>
 <summary><strong>LLM</strong></summary>
-OpenAI의 GTP-4o API를 이용하여 사용자의 자연어 질의에 자동으로 응답을 생성해 출력하는 기능 구현
-답변을 생성할 때 RAG, function calling을 이용해 비상 상황에 대한 대처 방법 또는 입력 위치에 따라 가장 가까운 대피소 위치 정보를 반환받아 답변 생성에 사용
+OpenAI의 GTP-4o API를 이용하여 사용자의 자연어 질의에 자동으로 응답을 생성해 출력하는 기능 구현 <br>
+답변을 생성할 때 RAG, function calling을 이용해 비상 상황에 대한 대처 방법 또는 입력 위치에 따라 가장 가까운 대피소 위치 정보를 반환받아 답변 생성에 사용 <br>
 사용된 시스템 프롬프트: 
 
-> "system", (
+``` 
+chat_template = ChatPromptTemplate.from_messages(
+    [
+        ("system", (
             "당신은 비상사태 대처 매뉴얼 전문 챗봇입니다. "
             "재난 상황(지진, 화재, 홍수, 전쟁 등)이 발생했을 때 사용자가 안전하게 대피할 수 있도록 최적의 정보를 제공하는 것이 목표입니다.\n\n"
             "제공된 컨텍스트만 사용해서, 질문에 답변하세요."
@@ -55,19 +58,24 @@ OpenAI의 GTP-4o API를 이용하여 사용자의 자연어 질의에 자동으�
             "5. 함수 호출 지침: 대피소 검색이나 위치 관련 질문에 적절한 함수를 호출하여 데이터를 검색하세요.\n"
             "6. 다양한 사용자 고려: 복잡한 용어 대신 쉬운 표현을 사용하세요.\n"
             "7. 추가 지침: 필요한 경우 질문을 되묻고, 제공 정보가 명확한지 점검하세요."
-        )
+        )),
+        ("human", "안녕하세요!"),
+        ("ai", "안녕하세요! 저는 비상사태에서 안전한 대처를 도와드리는 전문 AI 챗봇입니다. 무엇을 도와드릴까요?"),
+        ("human", "{user_input}"),
+    ]
+)
+```
 
 </details>
 
 <details>
 <summary><strong>RAG</strong></summary>
 PDF와 재난안전데이터공유플랫폼에서 가져온 API에서 대응법을 학습해 VectorDB에 임베딩된 데이터를 저장, 사용자의 질문에 관련된 데이터를 검색해 결과 데이터를 LLM에 전달해 정확도 높은 답변 생성
-
-재난 상황에 대한 사용자의 질문을 받아 자연어 질의에 기반한 정확한 답변 제공
-제공되는 API의 한계로 인해 등록된 IP 외에는 API의 사용이 불가하여 SourceCode 디렉토리 안에 API로부터 응답받은 json파일이 미리 저장되어 있다. 
+대피소의 위치 데이터의 경우, 제공되는 API의 한계로 인해 등록된 IP 외에는 API의 사용이 불가하여 SourceCode 디렉토리 안에 API로부터 응답받은 json파일이 미리 저장되어 있다.
+재난 상황에 대한 사용자의 질문을 받아 자연어 질의에 기반한 정확한 답변 제공 
 
 사전에 전처리된 데이터가 preprocessed_data_path 변수가 지정하는 디렉토리에 저장되어 있다면 API 호출 비용을 아끼기 위해 저장되어있던 전처리된 데이터를 사용
-preprocessed_data_path의 디폴트값은 'SourceCode/preprocessed_docs.pkl'이다. 
+- preprocessed_data_path의 디폴트값은 'SourceCode/preprocessed_docs.pkl'이다. 
 
 필요없는 텍스트를 줄이기 위해 다음의 전처리 과정을 수행: 
 - "비상시 국민행동요령 알아야 안전하다"로 시작한다면 제거
@@ -83,8 +91,8 @@ FAISS와 Pandas를 이용해 벡터DB 구현
 
 <details>
 <summary><strong>위치 기반 서비스 (LBS)</strong></summary>
-카카오맵 API를 이용하여 검색한 위치의 경도와 위도를 반환함
 
+카카오맵 API를 이용하여 검색한 위치의 경도와 위도를 반환함
 
 
 </details>
