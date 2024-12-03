@@ -33,7 +33,7 @@ before&after 수치/시각적으로 표현
 ---
 
 ## 인프라 아키텍쳐 & 적용기술
-![](\SourceCode\FigJam_basics.png)
+![](SourceCode\FigJam_basics.png)
  
 
 ### 적용 기술
@@ -70,12 +70,12 @@ chat_template = ChatPromptTemplate.from_messages(
 
 <details>
 <summary><strong>RAG</strong></summary>
-PDF와 재난안전데이터공유플랫폼에서 가져온 API에서 대응법을 학습해 VectorDB에 임베딩된 데이터를 저장, 사용자의 질문에 관련된 데이터를 검색해 결과 데이터를 LLM에 전달해 정확도 높은 답변 생성
-대피소의 위치 데이터의 경우, 제공되는 API의 한계로 인해 등록된 IP 외에는 API의 사용이 불가하여 SourceCode 디렉토리 안에 API로부터 응답받은 json파일이 미리 저장되어 있다.
-재난 상황에 대한 사용자의 질문을 받아 자연어 질의에 기반한 정확한 답변 제공 
+PDF와 재난안전데이터공유플랫폼에서 가져온 API에서 대응법을 학습해 VectorDB에 임베딩된 데이터를 저장, 사용자의 질문에 관련된 데이터를 검색해 결과 데이터를 LLM에 전달해 정확도 높은 답변 생성<br>
+대피소의 위치 데이터의 경우, 제공되는 API의 한계로 인해 등록된 IP 외에는 API의 사용이 불가하여 SourceCode 디렉토리 안에 API로부터 응답받은 json파일이 미리 저장되어 있다.<br>
+재난 상황에 대한 사용자의 질문을 받아 자연어 질의에 기반한 정확한 답변 제공 <br></br>
 
 사전에 전처리된 데이터가 preprocessed_data_path 변수가 지정하는 디렉토리에 저장되어 있다면 API 호출 비용을 아끼기 위해 저장되어있던 전처리된 데이터를 사용
-- preprocessed_data_path의 디폴트값은 'SourceCode/preprocessed_docs.pkl'이다. 
+preprocessed_data_path의 디폴트값은 'SourceCode/preprocessed_docs.pkl'이다. 
 
 필요없는 텍스트를 줄이기 위해 다음의 전처리 과정을 수행: 
 - "비상시 국민행동요령 알아야 안전하다"로 시작한다면 제거
@@ -91,9 +91,23 @@ FAISS와 Pandas를 이용해 벡터DB 구현
 
 <details>
 <summary><strong>위치 기반 서비스 (LBS)</strong></summary>
+카카오맵 API를 이용하여 검색한 위치의 경도와 위도를 반환함<br>
+function calling을 통해서 현재 위치에서 가장 가까운 대피소 위치 반환
 
-카카오맵 API를 이용하여 검색한 위치의 경도와 위도를 반환함
+(대피소 위치정보의 경우 API의 한계로 정해진 IP 외에는 API로부터 응답을 받을 수 없어 Source 디렉토리에 미리 API의 응답 패킷인 shelters.json을 저장해두었다.)
+대피소 위치정보의 전처리 과정은 다음과 같다: 
+- DMS를 소수점 좌표로 변환, 위도와 경도에 각각 수행
+- 시설명, 주소, 위도, 경도를 제외한 불필요한 데이터 정리
 
+get_coordinates(query)
+카카오 API를 호출해 사용자가 입력한 주소를 검색, 검색결과가 없을 경우 키워드를 이용해 주소 검색
+검색한 주소의 좌표 반환
+
+haversine_distance(lat1, lon1, lat2, lon2)
+두 장소의 위도와 경도를 받아 두 지점 사이의 거리를 킬로미터 단위로 계산
+
+find_nearest_shelters(latitude, longitude, address) -> str
+주어진 위도와 경도 또는 주소를 기준으로 가장 가까운 대피소 검색
 
 </details>
 
