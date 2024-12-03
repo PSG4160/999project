@@ -25,35 +25,52 @@
 
 ## 📝 **프로젝트 개요**
 **성능 개선**
-어느 부분에서 성능개선이 이루어졌는지?
-before&after 수치/시각적으로 표현
+실행할 때마다 PyPDFLoader로 파일을 불러와 전처리를 진행한 결과 실행이 느려지고 API 호출 비용이 자꾸 발생하는 것을 확인했다. <br>
+이를 해결하기 위해 캐시를 지원하는 embedding 기법을 도입하고 전처리된 Loader파일을 저장해서 불러오는 형식으로 해결했다. 
+
 **트러블슈팅**
-<detail>
-<summary><strong>functions 파라미터, 함수 호출 로직</strong></summary>
-<strong>1. functions 파라미터 경고 문제
+<details><summary><strong> function calling 사용시 해당 함수에서 응답을 내고 나머지 질문에 대답하지 못하고 종료 </strong></summary>
 
-문제: ChatOpenAI 모델 초기화 시 functions를 직접 전달했을 때 다음과 같은 경고 발생: 
+**문제**: 함수호출을 사용했을때 반환한 결과를 그대로 응답하고 나머지 질문에는 대답을 못하는 문제가 발생했습니다.
+예를 들어:
 
-```
-functions is not default parameter. functions was transferred to model_kwargs. Please confirm that functions is what you intended. 
-```
+>user: 서울시청역이야, 비상상황 대처 매뉴얼을 알려줘. 
+assistant: 서울시청역 근처 대피소 정보만 반환하고 비상상황 대처 매뉴얼에는 응답하지 않고 대답이 종료되었습니다.
 
-원인: 
+1. <b>함수 호출 및 응답 저장 프로세스: </b>
+- <b>문제</b>: 함수 호출 후 반환된 `arguments`가 문자열(JSON) 또는 딕셔너리일 수 있어 처리 방식이 달라야 합니다. 
+- <b>수정</b>: 반환값의 타입을 확인하여 파싱 과정을 다르게 처리했습니다
 
-</detail>
+2. <b>파싱과 데이터 저장의 이유:</b>
+- <b>문제</b>: 함수의 반환 데이터를 모델이 다시 사용할 수 있도록 대화 기록에 저장했습니다
+- <b>수정</b>: `FunctionMessage` 를 생성하고 이를 대화 기록에 추가했습니다
+
+3. <b>저장된 데이터를 모델에 재사용:</b>
+- <b>문제</b>: 함수 호출 후 모델이 대화 흐름을 이어가려면, 함수 응답이 필요합니다
+- <b>수정</b>: 대화 기록을 모델에 전달해 새로운 응답 생성합니다
+</details>
+
+<details><summary><strong>streamlit 호출 로딩 속도</strong></summary>
+<b>문제</b>: Streamlit 구현 과정에서 본 llm.py 파일을 실행하면, doc loader 과정을 거쳐서 실행이 느려지고 있는것을 확인했습니다.
+- <b>문제</b>: 실행을 할 때마다 PyPDFLoader로 파일을 불러와 전처리를 진행한 결과 실행이 느려지고 비용이 발생하는 것을 확인했습니다.
+- <b>수정</b>: 전처리된 Loader 파일을 저장해서 불러오는 형식으로 해결했습니다.
+
+
+</details>
 
 
 ---
 
 ## 인프라 아키텍쳐 & 적용기술
 ### 인프라 아키텍쳐
-![](SourceCode\FigJam_basics.png)
-
-1. 사용자 인터페이스: `Streamlit` 기반으로 사용자 입력 및 결과 표시
+![](SourceCode\FigJam_basics.jpg)
+<br>1. 사용자 인터페이스: `Streamlit` 기반으로 사용자 입력 및 결과 표시</br>
 2. 백엔드 API
 - OpenAI GPT 모델: 자연어 이해 및 처리
 - 카카오 지도 API: 위치 기반 검색
 - 재난안전플랫폼 API: 대피소 23,000개 정보 호출
+
+
 3. 데이터 레이어: 
 - PDF 데이터 파싱(PyPDFLoader)
 - 로컬 JSON 데이터(대피소 정보)
@@ -232,5 +249,6 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 ### **프로젝트의 성과**
 
 ### **개선 목표**
-재난안전플랫폼에서 제공한 API는 
-음성 인식 및 음성 출력 기능,  
+재난안전플랫폼에서 제공한 생활안전API는 
+음성 인식 및 음성 출력 기능이 아직 
+재난 현황 API 같은 
