@@ -29,14 +29,18 @@
 before&after 수치/시각적으로 표현
 **트러블슈팅**
 
+
 ---
 
 ## 인프라 아키텍쳐 & 적용기술
 ![](\SourceCode\FigJam_basics.png)
+ 
+
 ### 적용 기술
 <details>
 <summary><strong>LLM</strong></summary>
 OpenAI의 GTP-4o API를 이용하여 사용자의 자연어 질의에 자동으로 응답을 생성해 출력하는 기능 구현
+답변을 생성할 때 RAG, function calling을 이용해 비상 상황에 대한 대처 방법 또는 입력 위치에 따라 가장 가까운 대피소 위치 정보를 반환받아 답변 생성에 사용
 사용된 시스템 프롬프트: 
 
 > "system", (
@@ -69,16 +73,19 @@ preprocessed_data_path의 디폴트값은 'SourceCode/preprocessed_docs.pkl'이�
 - "비상시 국민행동요령 알아야 안전하다"로 시작한다면 제거
 - 특정 패턴이 시작 부분에 있으면 제거
 - 기타 불필요한 줄바꿈, 공백, 특수문자 정리
+
 각 전처리가 끝난 데이터는 preprocessed_data_path 디렉토리에 저장됨
 전처리가 끝난 데이터는 임베딩되어 VectorDB에 저장
 
 FAISS와 Pandas를 이용해 벡터DB 구현 
-캐시 지원 임베딩
+캐시 지원 임베딩, OpenAI 임베딩 모델(text-embedding-3-small) 사용
 </details>
 
 <details>
 <summary><strong>위치 기반 서비스 (LBS)</strong></summary>
 카카오맵 API를 이용하여 검색한 위치의 경도와 위도를 반환함
+
+
 
 </details>
 
