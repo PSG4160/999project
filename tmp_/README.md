@@ -99,15 +99,29 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 - DMS를 소수점 좌표로 변환, 위도와 경도에 각각 수행
 - 시설명, 주소, 위도, 경도를 제외한 불필요한 데이터 정리
 
-get_coordinates(query)
+<details>
+<summary><strong>get_coordinates(query)</strong></summary>
 카카오 API를 호출해 사용자가 입력한 주소를 검색, 검색결과가 없을 경우 키워드를 이용해 주소 검색
 검색한 주소의 좌표 반환
+</details>
 
-haversine_distance(lat1, lon1, lat2, lon2)
+
+<details>
+<summary><strong>haversine_distance(lat1, lon1, lat2, lon2)</strong></summary>
 두 장소의 위도와 경도를 받아 두 지점 사이의 거리를 킬로미터 단위로 계산
+</details>
 
-find_nearest_shelters(latitude, longitude, address) -> str
+<details>
+<summary><strong>find_nearest_shelters(latitude, longitude, address) -> str</strong></summary>
 주어진 위도와 경도 또는 주소를 기준으로 가장 가까운 대피소 검색
+만약 사용자가 입력으로 주소를 주었을 경우 해당 주소를 좌표로 전환
+- **calculate_distance(row)**: 전처리된 데이터프레임의 각 행에 haversine_distance()를 적용해 사용자의 위치와 대피소의 거리를 계산하는 함수
+
+계산된 거리 중 null이 아닌 값만 유효한 값으로 취급해 유효하지 않은 값은 이후의 과정에서 배제한다. 
+남은 대피소 중 거리 기준으로 정렬해 상위 3개만 선택해 결과 문자열을 생성하고 LLM으로 전달한다.  
+</details>
+
+
 
 </details>
 
