@@ -1,6 +1,9 @@
 <div align="left"> <img src="https://img.shields.io/badge/Language-Python-blue?style=flat-square&logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/AI-LLM-orange?style=flat-square" alt="LLM"> <img src="https://img.shields.io/badge/AI-RAG-green?style=flat-square" alt="RAG"> <img src="https://img.shields.io/badge/Library-LangChain-yellow?style=flat-square" alt="LangChain"> <img src="https://img.shields.io/badge/Library-FAISS-green?style=flat-square" alt="FAISS"> <img src="https://img.shields.io/badge/Library-pandas-lightblue?style=flat-square&logo=pandas&logoColor=white" alt="pandas">  <img src="https://img.shields.io/badge/Frontend-Streamlit-brightgreen?style=flat-square" alt="Streamlit"> <img src="https://img.shields.io/badge/Geolocation-streamlit--geolocation-blueviolet?style=flat-square" alt="streamlit-geolocation"> <img src="https://img.shields.io/badge/API-Kakao_Maps_API-yellowgreen?style=flat-square" alt="Kakao Maps API"> </div>
 
 # **🚨[비상사태 매뉴얼 챗봇]**
+
+</br>
+
 ## 🌟 **프로젝트 소개**
 > 이 프로젝트는 비상사태 상황에서 시민들에게 빠르고 정확한 정보를 제공하기 위해 개발되었습니다.
 > 💡 **주요 목표**: 비상사태 입력 시 시민들에게 신속하게 정확도가 높은 매뉴얼 소개, 사용자의 위치 정보를 기반으로 가장 가까운 대피소의 위치 안내
@@ -11,6 +14,8 @@
 
 ## 🎯 프로젝트 핵심 목표
 
+</br>
+
 - **비상사태 대책**
   - 전쟁, 가뭄, 화재, 지진 등 다양한 비상사태에 대한 대처 방안 신속하게 제공.
 - **위치 기반 대피소 안내**
@@ -19,6 +24,8 @@
   - LLM, RAG를 이용하여 비상사태 대피 매뉴얼을 학습하는 기능 구현, 자연어 질의에 기반한 정확한 답변 제공.
 
 ## 📝 프로젝트 개요
+
+</br>
 
 ### 성능 개선
 
@@ -69,6 +76,8 @@
 ---
 
 ## 📌 인프라 아키텍처 및 적용 기술
+
+</br>
 
 ### 인프라 아키텍처
 
@@ -186,6 +195,9 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 </details>
 
 ## 🔍 **주요 기능**
+
+</br>
+
 ### 1. **데이터 수집 및 전처리**  
    - 재난안전플랫폼, 카카오맵 등 다양한 플랫폼에서 API를 활용해 실시간 데이터를 수집. 
    - 재해/재난 상황 대처 매뉴얼, 대피소 위치 정보 등 수집된 데이터를 전처리하여 효과적으로 사용.
@@ -199,6 +211,9 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 
 ### ~~4. 대화 기록 저장 및 처리~~
 (민감한 정보인 사용자 위치를 포함하여, 대화 기록 저장을 하지 않음)
+
+
+</br>
 
 ## 👩‍💻 **팀원 소개**
 <details>
@@ -261,6 +276,8 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 </details>
 
 </details>
+
+</br>
 
 ## **성과 및 회고**
 ### **프로젝트의 성과**
