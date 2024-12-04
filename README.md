@@ -1,6 +1,9 @@
 <div align="left"> <img src="https://img.shields.io/badge/Language-Python-blue?style=flat-square&logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/AI-LLM-orange?style=flat-square" alt="LLM"> <img src="https://img.shields.io/badge/AI-RAG-green?style=flat-square" alt="RAG"> <img src="https://img.shields.io/badge/Library-LangChain-yellow?style=flat-square" alt="LangChain"> <img src="https://img.shields.io/badge/Library-FAISS-green?style=flat-square" alt="FAISS"> <img src="https://img.shields.io/badge/Library-pandas-lightblue?style=flat-square&logo=pandas&logoColor=white" alt="pandas">  <img src="https://img.shields.io/badge/Frontend-Streamlit-brightgreen?style=flat-square" alt="Streamlit"> <img src="https://img.shields.io/badge/Geolocation-streamlit--geolocation-blueviolet?style=flat-square" alt="streamlit-geolocation"> <img src="https://img.shields.io/badge/API-Kakao_Maps_API-yellowgreen?style=flat-square" alt="Kakao Maps API"> </div>
 
 # **🚨[비상사태 매뉴얼 챗봇]**
+
+</br>
+
 ## 🌟 **프로젝트 소개**
 > 이 프로젝트는 비상사태 상황에서 시민들에게 빠르고 정확한 정보를 제공하기 위해 개발되었습니다.
 > 💡 **주요 목표**: 비상사태 입력 시 시민들에게 신속하게 정확도가 높은 매뉴얼 소개, 사용자의 위치 정보를 기반으로 가장 가까운 대피소의 위치 안내
@@ -8,8 +11,11 @@
 
 <img src="SourceCode/리드미시연영상1.gif" alt="챗봇 시연 영상">
 
+</br>
 
 ## 🎯 프로젝트 핵심 목표
+
+</br>
 
 - **비상사태 대책**
   - 전쟁, 가뭄, 화재, 지진 등 다양한 비상사태에 대한 대처 방안 신속하게 제공.
@@ -18,7 +24,11 @@
 - **PDF RAG**
   - LLM, RAG를 이용하여 비상사태 대피 매뉴얼을 학습하는 기능 구현, 자연어 질의에 기반한 정확한 답변 제공.
 
-## 📝 프로젝트 개요
+</br>
+
+## 📝 효율성 개선 및 주요 문제 해결
+
+</br>
 
 ### 성능 개선
 
@@ -59,7 +69,6 @@
 <details>
 <summary><strong>Streamlit 호출 로딩 속도</strong></summary>
 
-**문제**: Streamlit 구현 과정에서 `llm.py` 파일을 실행하면, `doc loader` 과정을 거쳐서 실행이 느려지고 있는 것을 확인했습니다.
 
 - **문제**: 실행할 때마다 `PyPDFLoader`로 파일을 불러와 전처리를 진행한 결과 실행이 느려지고 비용이 발생하는 것을 확인했습니다.
 - **해결**: 전처리된 Loader 파일을 저장해서 불러오는 형식으로 해결했습니다.
@@ -68,7 +77,11 @@
 
 ---
 
+</br>
+
 ## 📌 인프라 아키텍처 및 적용 기술
+
+</br>
 
 ### 인프라 아키텍처
 
@@ -185,7 +198,12 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 
 </details>
 
+</br>
+
 ## 🔍 **주요 기능**
+
+</br>
+
 ### 1. **데이터 수집 및 전처리**  
    - 재난안전플랫폼, 카카오맵 등 다양한 플랫폼에서 API를 활용해 실시간 데이터를 수집. 
    - 재해/재난 상황 대처 매뉴얼, 대피소 위치 정보 등 수집된 데이터를 전처리하여 효과적으로 사용.
@@ -199,6 +217,9 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 
 ### ~~4. 대화 기록 저장 및 처리~~
 (민감한 정보인 사용자 위치를 포함하여, 대화 기록 저장을 하지 않음)
+
+
+</br>
 
 ## 👩‍💻 **팀원 소개**
 <details>
@@ -225,9 +246,9 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 - [GitHub 링크](https://github.com/mireuk-git)
 
 >### 👨‍💻 **최해찬**
-- **담당 파트:** LLM_RAG  
-- **역할:** PPT 제작🖼️  
-- [GitHub 링크](https://github.com/)
+- **담당 파트:** 데이터 전처리, function calling 설계 및 구현  
+- **역할:** jira workflow, PPT 제작🖼️  
+- [GitHub 링크](https://github.com/choi-sun1)
 
 <details>
 <summary><strong>999조 그라운드룰 조회하기</strong></summary>
@@ -262,7 +283,12 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 
 </details>
 
+</br>
+
 ## **성과 및 회고**
+
+</br>
+
 ### **프로젝트의 성과**
 AI_8기 부트캠프 기준으로 팀 과제가 아닌, 가이드라인 없이 주제부터 만든 첫 팀 프로젝트로, 다른 개발자들과 함께 프로젝트를 진행하는 경험을 쌓을 수 있는 계기가 되었다. <br>
 LLM, RAG, Langchain 등 이번 프로젝트에서 사용되었던 챗봇과 관련된 기술의 활용법과 function calling 부분에 대한 이해도가 높아질 수 있었다. 
