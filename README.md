@@ -66,7 +66,6 @@
 <details>
 <summary><strong>Streamlit 호출 로딩 속도</strong></summary>
 
-**문제**: Streamlit 구현 과정에서 `llm.py` 파일을 실행하면, `doc loader` 과정을 거쳐서 실행이 느려지고 있는 것을 확인했습니다.
 
 - **문제**: 실행할 때마다 `PyPDFLoader`로 파일을 불러와 전처리를 진행한 결과 실행이 느려지고 비용이 발생하는 것을 확인했습니다.
 - **해결**: 전처리된 Loader 파일을 저장해서 불러오는 형식으로 해결했습니다.
