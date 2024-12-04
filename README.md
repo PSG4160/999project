@@ -225,8 +225,8 @@ function calling을 통해서 현재 위치에서 가장 가까운 대피소 위
 - [GitHub 링크](https://github.com/mireuk-git)
 
 >### 👨‍💻 **최해찬**
-- **담당 파트:** LLM_RAG  
-- **역할:** PPT 제작🖼️  
+- **담당 파트:** 데이터 전처리, function calling 설계 및 구현  
+- **역할:** jira workflow, PPT 제작🖼️  
 - [GitHub 링크](https://github.com/)
 
 <details>
